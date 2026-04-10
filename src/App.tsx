@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LoginScreen } from './components/LoginScreen';
 import { PlayerState } from './components/PlayerState';
 import { GameScreen } from './components/GameScreen';
@@ -10,12 +10,12 @@ type AppView = 'login' | 'dashboard' | 'game';
 function App() {
   const { isAuthenticated, playerId, login, logout, fetchPlayerState, playerState } = useAuth();
   const { currentNode, getNextNode, startGame, resetGame, isLoading: gameLoading, chapterId } = useGameState(playerId);
-  const [view, setView] = useState<AppView>('login');
+  const [view, setView] = useState<AppView>(() => isAuthenticated ? 'dashboard' : 'login');
+  const hasInitializedRef = useRef(false);
 
   useEffect(() => {
-    // Check if user is already logged in
-    if (isAuthenticated) {
-      setView('dashboard');
+    if (isAuthenticated && !hasInitializedRef.current) {
+      hasInitializedRef.current = true;
       fetchPlayerState();
     }
   }, [isAuthenticated, fetchPlayerState]);

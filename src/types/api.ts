@@ -19,6 +19,7 @@ export interface NextNodeRequest {
   bookId: string;
   currentNodeId: string;
   chapterId: string;
+  chosenOptionId?: string;
 }
 
 export interface NextNodeResponse {
@@ -27,4 +28,25 @@ export interface NextNodeResponse {
   text: string;
   speaker: string;
   isChapterEnd: boolean;
+}
+
+export interface SaveStateRequest {
+  playerId: string;
+  bookId: string;
+}
+
+export interface SaveStateResponse {
+  currentNodeId: string;
+  stateVariables: Record<string, string>;
+}
+
+export interface UpdateStateRequest {
+  playerId: string;
+  bookId: string;
+  currentNodeId: string;
+  stateVariables: Record<string, string>;
+}
+
+export interface UpdateStateResponse {
+  success: boolean;
 }

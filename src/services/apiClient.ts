@@ -6,9 +6,12 @@ import type {
   PlayerStateResponse,
   NextNodeRequest,
   NextNodeResponse,
+  SaveStateResponse,
+  UpdateStateRequest,
+  UpdateStateResponse,
 } from '../types/api';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081';
 
 class ApiClient {
   private client: AxiosInstance;
@@ -45,6 +48,18 @@ class ApiClient {
 
   async getNextNode(request: NextNodeRequest): Promise<NextNodeResponse> {
     const response = await this.client.post<NextNodeResponse>('/api/v1/play/next-node', request);
+    return response.data;
+  }
+
+  async getSaveState(playerId: string, bookId: string): Promise<SaveStateResponse> {
+    const response = await this.client.get<SaveStateResponse>('/api/v1/player/save-state', {
+      params: { playerId, bookId },
+    });
+    return response.data;
+  }
+
+  async updateState(request: UpdateStateRequest): Promise<UpdateStateResponse> {
+    const response = await this.client.post<UpdateStateResponse>('/api/v1/player/update-state', request);
     return response.data;
   }
 }
