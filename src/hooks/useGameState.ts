@@ -51,17 +51,17 @@ export function useGameState(playerId: string | null) {
           }));
           return;
         }
-      } catch (e) {
+      } catch {
         // No saved state, continue with new game
         console.log('No saved state found, starting new game');
       }
 
       // Start new game
       await startGame('ch_01');
-    } catch (e) {
+    } catch (error) {
       setGameState((prev) => ({
         ...prev,
-        error: e instanceof Error ? e.message : 'Login failed',
+        error: error instanceof Error ? error.message : 'Login failed',
         isLoading: false,
       }));
     }

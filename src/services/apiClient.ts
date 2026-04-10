@@ -6,7 +6,6 @@ import type {
   PlayerStateResponse,
   NextNodeRequest,
   NextNodeResponse,
-  SaveStateRequest,
   SaveStateResponse,
   UpdateStateRequest,
   UpdateStateResponse,
