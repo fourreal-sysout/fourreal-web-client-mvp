@@ -53,21 +53,11 @@ jobs:
           # Install commitlint
           npm install -g @commitlint/cli @commitlint/config-conventional
           
-          # Validate each commit using git log with null delimiter
-          git log --format='%B' origin/main..${{ github.event.pull_request.head.sha }} --pretty=format:"---COMMIT---%n%B" | while IFS= read -r line; do
-            if [ "$line" = "---COMMIT---" ]; then
-              if [ -n "$current_commit" ]; then
-                echo "$current_commit" | npx commitlint
-              fi
-              current_commit=""
-            else
-              current_commit="$current_commit$line"$'\n'
+          # Get commit hashes and validate each commit
+          git rev-list origin/main..${{ github.event.pull_request.head.sha }} | while read -r commit_hash; do
+            if [ -n "$commit_hash" ]; then
+              git log -1 --format='%B' "$commit_hash" | npx commitlint
             fi
           done
-          
-          # Validate last commit
-          if [ -n "$current_commit" ]; then
-            echo "$current_commit" | npx commitlint
-          fi
           
           echo "✅ Commit message validation passed"
