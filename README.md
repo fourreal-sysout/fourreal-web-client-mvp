@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+# FourReal Web Client MVP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Temporary Web client for the FourReal interactive fiction platform - built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Ecosystem Architecture](#ecosystem-architecture)
+- [Stack](#stack)
+- [Quick Start](#quick-start)
+- [Development](#development)
+- [Development Standards](#development-standards)
 
-## React Compiler
+## Ecosystem Architecture
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```mermaid
+graph TB
+    subgraph "FourReal Ecosystem"
+        Web[Web Client<br/>React/TypeScript]
+        BFF[Game BFF<br/>Kotlin/Quarkus]
+        Player[Player State MS<br/>Kotlin/MongoDB]
+        Story[Story Resolver MS<br/>Python/Neo4j/Valkey]
+        Contracts[Contracts Repo<br/>Protobuf Definitions]
+    end
 
-## Expanding the ESLint configuration
+    Web -->|REST:8080| BFF
+    BFF -->|gRPC:9000| Player
+    BFF -->|gRPC:50051| Story
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+    Player -->|MongoDB| MongoDB[(MongoDB)]
+    Story -->|Neo4j| Neo4j[(Neo4j)]
+    Story -->|Valkey| Valkey[(Valkey)]
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+    BFF -.->|consumes stubs| Contracts
+    Player -.->|consumes stubs| Contracts
+    Story -.->|consumes stubs| Contracts
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+    style Web fill:#fce4ec
+    style Web stroke:#c2185b
+    style Web stroke-width:3px
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **React 19** + **TypeScript**
+- **Vite** (build tool & dev server)
+- **TailwindCSS** (styling)
+- **Axios** (HTTP client)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Quick Start
+
+```bash
+npm install
+npm run dev
 ```
+
+## Development
+
+```bash
+npm run dev      # Start dev server
+npm run build    # Build for production
+npm run lint     # Run ESLint
+npm run preview  # Preview production build
+```
+
+## Development Standards
+
+This project follows standardized development practices across the FourReal ecosystem:
+
+- **Commit messages**: Must follow [Conventional Commits](https://www.conventionalcommits.org/) format (enforced locally via commitlint + husky)
+- **Pull requests**: Must use the provided PR template with all required sections
+
+See `.commitlintrc.json` for commit message rules and `.github/pull_request_template.md` for PR requirements.
