@@ -68,6 +68,5 @@ This project follows standardized development practices across the FourReal ecos
 
 - **Commit messages**: Must follow [Conventional Commits](https://www.conventionalcommits.org/) format (enforced locally via commitlint + husky)
 - **Pull requests**: Must use the provided PR template with all required sections
-- **Validations**: Automated checks run on PRs via [GitHub Actions](.github/workflows/pr-validation.yml)
 
 See `.commitlintrc.json` for commit message rules and `.github/pull_request_template.md` for PR requirements.
