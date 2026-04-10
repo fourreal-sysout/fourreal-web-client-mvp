@@ -50,17 +50,24 @@ jobs:
           # Fetch PR commits
           git fetch --depth=1 origin ${{ github.event.pull_request.head.sha }}
           
-          # Get commit messages in PR
-          COMMITS=$(git log --format='%B' origin/main..${{ github.event.pull_request.head.sha }})
-          
           # Install commitlint
           npm install -g @commitlint/cli @commitlint/config-conventional
           
-          # Validate each commit
-          echo "$COMMITS" | while read -r commit; do
-            if [ -n "$commit" ]; then
-              echo "$commit" | npx commitlint
+          # Validate each commit using git log with null delimiter
+          git log --format='%B' origin/main..${{ github.event.pull_request.head.sha }} --pretty=format:"---COMMIT---%n%B" | while IFS= read -r line; do
+            if [ "$line" = "---COMMIT---" ]; then
+              if [ -n "$current_commit" ]; then
+                echo "$current_commit" | npx commitlint
+              fi
+              current_commit=""
+            else
+              current_commit="$current_commit$line"$'\n'
             fi
           done
+          
+          # Validate last commit
+          if [ -n "$current_commit" ]; then
+            echo "$current_commit" | npx commitlint
+          fi
           
           echo "✅ Commit message validation passed"
