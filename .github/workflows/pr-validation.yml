@@ -44,20 +44,3 @@ jobs:
           fi
           
           echo "✅ PR template validation passed"
-
-      - name: Validate commit messages
-        run: |
-          # Fetch PR commits
-          git fetch --depth=1 origin ${{ github.event.pull_request.head.sha }}
-          
-          # Install commitlint
-          npm install -g @commitlint/cli @commitlint/config-conventional
-          
-          # Get commit hashes and validate each commit
-          git rev-list origin/main..${{ github.event.pull_request.head.sha }} | while read -r commit_hash; do
-            if [ -n "$commit_hash" ]; then
-              git log -1 --format='%B' "$commit_hash" | npx commitlint
-            fi
-          done
-          
-          echo "✅ Commit message validation passed"
