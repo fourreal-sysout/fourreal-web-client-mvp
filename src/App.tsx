@@ -1,0 +1,89 @@
+import { useEffect, useState } from 'react';
+import { LoginScreen } from './components/LoginScreen';
+import { PlayerState } from './components/PlayerState';
+import { GameScreen } from './components/GameScreen';
+import { useAuth } from './hooks/useAuth';
+import { useGameState } from './hooks/useGameState';
+
+type AppView = 'login' | 'dashboard' | 'game';
+
+function App() {
+  const { isAuthenticated, playerId, login, logout, fetchPlayerState, playerState } = useAuth();
+  const { currentNode, getNextNode, startGame, resetGame, isLoading: gameLoading, chapterId } = useGameState(playerId);
+  const [view, setView] = useState<AppView>('login');
+
+  useEffect(() => {
+    // Check if user is already logged in
+    if (isAuthenticated) {
+      setView('dashboard');
+      fetchPlayerState();
+    }
+  }, [isAuthenticated, fetchPlayerState]);
+
+  const handleLogin = async (playerId: string) => {
+    try {
+      await login(playerId);
+      setView('dashboard');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  const handleStartGame = async () => {
+    try {
+      await startGame();
+      setView('game');
+    } catch (error) {
+      console.error('Failed to start game:', error);
+    }
+  };
+
+  const handleNextNode = async () => {
+    if (!currentNode) return;
+    try {
+      await getNextNode(currentNode.nodeId, chapterId || 'ch_01');
+    } catch (error) {
+      console.error('Failed to get next node:', error);
+    }
+  };
+
+  const handleBackToMenu = () => {
+    setView('dashboard');
+  };
+
+  const handleLogout = () => {
+    logout();
+    resetGame();
+    setView('login');
+  };
+
+  if (view === 'login') {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
+
+  if (view === 'dashboard') {
+    return (
+      <PlayerState
+        playerState={playerState}
+        onStartGame={handleStartGame}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  if (view === 'game') {
+    return (
+      <GameScreen
+        currentNode={currentNode}
+        isLoading={gameLoading}
+        error={null}
+        onNext={handleNextNode}
+        onBackToMenu={handleBackToMenu}
+      />
+    );
+  }
+
+  return null;
+}
+
+export default App;
