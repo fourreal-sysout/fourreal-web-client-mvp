@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { apiClient } from '../services/apiClient';
+import { DEFAULT_BOOK_ID, DEFAULT_CHAPTER_ID, INITIAL_NODE_ID } from '../config/constants';
 import type { NextNodeRequest, NextNodeResponse } from '../types/api';
 
 interface GameState {
@@ -28,20 +29,20 @@ export function useGameState(playerId: string | null) {
       setGameState((prev) => ({
         ...prev,
         playerId: response.playerId,
-        bookId: 'book_open_hearts_01',
+        bookId: DEFAULT_BOOK_ID,
         isLoading: false,
       }));
 
       // Load saved state from Player State MS
       try {
-        const savedState = await apiClient.getSaveState(response.playerId, 'book_open_hearts_01');
+        const savedState = await apiClient.getSaveState(response.playerId, DEFAULT_BOOK_ID);
         if (savedState.currentNodeId && savedState.currentNodeId !== '__unset__') {
           // Resume from saved node
           const nodeResponse = await apiClient.getNextNode({
             playerId: response.playerId,
-            bookId: 'book_open_hearts_01',
+            bookId: DEFAULT_BOOK_ID,
             currentNodeId: savedState.currentNodeId,
-            chapterId: 'ch_01',
+            chapterId: DEFAULT_CHAPTER_ID,
           });
           setGameState((prev) => ({
             ...prev,
@@ -57,7 +58,7 @@ export function useGameState(playerId: string | null) {
       }
 
       // Start new game
-      await startGame('ch_01');
+      await startGame(DEFAULT_CHAPTER_ID);
     } catch (error) {
       setGameState((prev) => ({
         ...prev,
@@ -77,7 +78,7 @@ export function useGameState(playerId: string | null) {
     try {
       const request: NextNodeRequest = {
         playerId,
-        bookId: gameState.bookId || 'book_open_hearts_01',
+        bookId: gameState.bookId || DEFAULT_BOOK_ID,
         currentNodeId: nodeId,
         chapterId,
         chosenOptionId,
@@ -88,7 +89,7 @@ export function useGameState(playerId: string | null) {
         currentNode: response,
         currentNodeId: response.nodeId,
         chapterId,
-        bookId: gameState.bookId || 'book_open_hearts_01',
+        bookId: gameState.bookId || DEFAULT_BOOK_ID,
         isLoading: false,
         error: null,
       });
@@ -97,7 +98,7 @@ export function useGameState(playerId: string | null) {
       try {
         await apiClient.updateState({
           playerId,
-          bookId: gameState.bookId || 'book_open_hearts_01',
+          bookId: gameState.bookId || DEFAULT_BOOK_ID,
           currentNodeId: response.nodeId,
           stateVariables: {},
         });
@@ -127,9 +128,9 @@ export function useGameState(playerId: string | null) {
     });
   };
 
-  const startGame = (chapterId: string = 'ch_01') => {
+  const startGame = (chapterId: string = DEFAULT_CHAPTER_ID) => {
     // Start from node_001 (first node in the graph)
-    return getNextNode('node_001', chapterId);
+    return getNextNode(INITIAL_NODE_ID, chapterId);
   };
 
   return {
