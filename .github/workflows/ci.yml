@@ -68,7 +68,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GH_QA_DISPATCH_TOKEN }}
-          repository: soraiayugulis/fourreal-qa
+          repository: fourreal-sysout/fourreal-qa
           event-type: e2e-triggered
           client-payload: |
             {
