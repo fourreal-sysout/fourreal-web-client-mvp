@@ -57,11 +57,12 @@ export function useAuth() {
     });
   };
 
-  const fetchPlayerState = async () => {
-    if (!authState.playerId) return;
+  const fetchPlayerState = async (playerIdOverride?: string) => {
+    const id = playerIdOverride ?? authState.playerId;
+    if (!id) return;
     setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
-      const state = await apiClient.getPlayerState(authState.playerId);
+      const state = await apiClient.getPlayerState(id);
       setAuthState((prev) => ({ ...prev, playerState: state, isLoading: false }));
       return state;
     } catch (error) {

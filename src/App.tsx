@@ -22,7 +22,8 @@ function App() {
 
   const handleLogin = async (playerId: string) => {
     try {
-      await login(playerId);
+      const response = await login(playerId);
+      await fetchPlayerState(response.playerId);
       setView('dashboard');
     } catch (error) {
       console.error('Login failed:', error);
