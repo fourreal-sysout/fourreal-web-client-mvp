@@ -15,7 +15,12 @@
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] Manual testing performed
-- [ ] E2E tests pass
+- [ ] Sonar analysis reviewed (no new critical issues)
+
+## E2E Coverage (fourreal-qa)
+> New UI features must have journey coverage added in [fourreal-qa](https://github.com/soraiayugulis/fourreal-qa) before merging.
+- [ ] No new E2E coverage needed (bug fix / internal refactor)
+- [ ] New journey coverage added in fourreal-qa (link PR: ___)
 
 ## Breaking Changes
 [List any breaking changes. If none, write "None."]
