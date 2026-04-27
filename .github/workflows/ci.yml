@@ -51,7 +51,7 @@ jobs:
         run: npm run build
 
       - name: SonarCloud analysis
-        if: always()
+        if: always() && github.actor != 'dependabot[bot]'
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
