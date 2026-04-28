@@ -16,7 +16,9 @@ function App() {
   useEffect(() => {
     if (isAuthenticated && !hasInitializedRef.current) {
       hasInitializedRef.current = true;
-      fetchPlayerState();
+      fetchPlayerState().catch(() => {
+        // New player with no saves — playerState stays null, dashboard still renders
+      });
     }
   }, [isAuthenticated, fetchPlayerState]);
 
