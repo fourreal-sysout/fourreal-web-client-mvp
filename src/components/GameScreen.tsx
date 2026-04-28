@@ -82,7 +82,7 @@ export function GameScreen({ currentNode, isLoading, error, onNext, onBackToMenu
 
           {/* Text */}
           <div className="mb-8">
-            <p className="text-lg text-gray-800 leading-relaxed">{currentNode.text}</p>
+            <p className="text-lg text-gray-800 leading-relaxed">{currentNode.text || '\u00a0'}</p>
           </div>
 
           {/* Chapter End */}
