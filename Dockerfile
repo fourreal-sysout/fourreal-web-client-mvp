@@ -5,7 +5,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY . .
+COPY src/ ./src/
+COPY public/ ./public/
+COPY index.html tsconfig*.json vite.config.ts postcss.config.js tailwind.config.js ./
 RUN npm run build
 
 FROM nginx:alpine
