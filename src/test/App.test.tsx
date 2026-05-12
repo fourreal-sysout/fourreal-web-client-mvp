@@ -70,7 +70,7 @@ describe('App — handleStartGame', () => {
     await waitFor(() => expect(screen.getByText('The story begins.')).toBeInTheDocument());
   });
 
-  it('navigates to game screen even when startGame fails (downstream error)', async () => {
+  it('stays on dashboard when startGame fails (downstream error)', async () => {
     mockLogin.mockResolvedValue(loginResponse);
     mockGetNextNode.mockRejectedValue(new Error('gRPC UNAVAILABLE'));
 
@@ -85,6 +85,6 @@ describe('App — handleStartGame', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /start game/i }));
 
-    await waitFor(() => expect(screen.queryByText('Player Dashboard')).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Player Dashboard')).toBeInTheDocument());
   });
 });
