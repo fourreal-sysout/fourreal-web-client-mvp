@@ -34,10 +34,10 @@ function App() {
   const handleStartGame = async () => {
     try {
       await startGame();
-      setView('game');
     } catch (error) {
       console.error('Failed to start game:', error);
     }
+    setView('game');
   };
 
   const handleNextNode = async () => {
